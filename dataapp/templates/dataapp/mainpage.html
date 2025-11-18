@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WanderChronicles | Travel Journal & Stories</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    /* Global Styles */
+    :root {
+      --primary-color: #4158d0;
+      --secondary-color: #c850c0;
+      --accent-color: #ffcc70;
+      --text-color: #333;
+      --light-bg: #f8f9fa;
+      --dark-bg: #212529;
+      --gradient-1: linear-gradient(43deg, #4158D0 0%, #C850C0 46%, #FFCC70 100%);
+      --gradient-2: linear-gradient(160deg, #0093E9 0%, #80D0C7 100%);
+      --gradient-3: linear-gradient(90deg, #FF9A8B 0%, #FF6A88 55%, #FF99AC 100%);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    body {
+      background-color: #f5f7fa;
+      background-image: 
+        radial-gradient(at 47% 33%, hsl(214.74, 95%, 77%, 0.1) 0, transparent 59%), 
+        radial-gradient(at 82% 65%, hsl(218.00, 79%, 78%, 0.1) 0, transparent 55%);
+      color: var(--text-color);
+      line-height: 1.6;
+      padding-top: 80px;
+    }
+    
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+    
+    .btn-travel {
+      display: inline-block;
+      padding: 12px 30px;
+      background: var(--gradient-1);
+      color: white;
+      border-radius: 30px;
+      font-weight: 600;
+      transition: all 0.5s ease;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      position: relative;
+      z-index: 1;
+      background-size: 200% auto;
+    }
+    
+    .btn-travel:hover {
+      background-position: right center;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(72, 84, 208, 0.3);
+      color: white;
+      animation: pulse 1.5s infinite;
+    }
+    
+    @keyframes pulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(72, 84, 208, 0.4);
+      }
+      70% {
+        box-shadow: 0 0 0 15px rgba(72, 84, 208, 0);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(72, 84, 208, 0);
+      }
+    }
+
+    .carousel-item {
+      height: 100vh;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .carousel-item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.6) 100%);
+      z-index: 1;
+    }
+
+    .carousel-item img {
+      object-fit: cover;
+      height: 100%;
+      width: 100%;
+      transform: scale(1.1);
+      transition: transform 8s ease;
+      filter: brightness(0.9);
+    }
+
+    .carousel-item.active img {
+      transform: scale(1);
+    }
+
+    .carousel-caption {
+      background: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(8px);
+      border-radius: 25px;
+      padding: 30px;
+      max-width: 800px;
+      margin: 0 auto;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      z-index: 2;
+      animation: slideUp 1s ease-out;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    section {
+      padding: 80px 0;
+    }
+    
+    h1, h2, h3, h4 {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+    }
+    
+    /* Header Styles */
+    header {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(15px);
+      color: var(--text-color);
+      padding: 15px 0;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+      transition: all 0.3s ease;
+    }
+    
+    header.scrolled {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 12px 0;
+    }
+    
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 30px;
+    }
+    
+    .logo {
+      font-size: 32px;
+      font-weight: 700;
+      font-family: 'Playfair Display', serif;
+      background: var(--gradient-1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradientMove 5s ease infinite;
+    }
+    
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    
+    .logo span {
+      background: var(--gradient-2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .logo i {
+      background: var(--gradient-1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-right: 10px;
+      font-size: 36px;
+    }
+    
+    nav {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      flex-wrap: nowrap;
+    }
+    
+    nav a {
+      font-weight: 500;
+      color: var(--text-color);
+      transition: all 0.4s ease;
+      position: relative;
+      padding: 6px 12px;
+      border-radius: 18px;
+      text-transform: uppercase;
+      font-size: 13px;
+      letter-spacing: 0.4px;
+    }
+    
+    nav a:hover {
+      color: var(--primary-color);
+      transform: translateY(-2px);
+    }
+    
+    nav a::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 20px;
+      padding: 2px;
+      background: var(--gradient-1);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      opacity: 0;
+      transition: all 0.4s ease;
+    }
+    
+    nav a:hover {
+      color: var(--primary-color);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(72, 84, 208, 0.15);
+    }
+    
+    nav a:hover::before {
+      opacity: 1;
+    }
+    
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+      background-size: cover;
+      background-position: center;
+      height: 100vh;
+      color: white;
+      display: flex;
+      align-items: center;
+      text-align: center;
+    }
+    
+    .hero-content {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .hero h1 {
+      font-size: 60px;
+      margin-bottom: 20px;
+    }
+    
+    .hero p {
+      font-size: 20px;
+      margin-bottom: 30px;
+    }
+    
+    /* About Section */
+    .about {
+      background: white;
+      padding: 80px 0;
+      border-radius: 0;
+    }
+    
+    section {
+      padding: 100px 0;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .about {
+      background: linear-gradient(135deg, #f6f9fc 0%, #edf1f7 100%);
+      position: relative;
+    }
+    
+    .about::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%234158d0' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    
+    .destinations {
+      background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 50%, #e0f7fa 100%);
+      position: relative;
+    }
+    
+    .destinations::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(circle at 20% 20%, rgba(56, 189, 248, 0.1) 0%, transparent 30%),
+        radial-gradient(circle at 80% 80%, rgba(14, 165, 233, 0.1) 0%, transparent 30%);
+      pointer-events: none;
+    }
+    
+    section .container {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 60px;
+      border-radius: 30px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      margin: 20px auto;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .destinations .container {
+      background: rgba(255, 255, 255, 0.8);
+      padding: 60px;
+      border-radius: 30px;
+      box-shadow: 0 20px 40px rgba(14, 165, 233, 0.15);
+      margin: 20px auto;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    .destinations .section-title h2 {
+      background: linear-gradient(135deg, #0284c7 0%, #0ea5e9 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 800;
+    }
+    
+    .destinations .section-title p {
+      color: #334155;
+    }
+    
+    .about .container {
+      background: white;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 4px 20px rgba(33, 150, 243, 0.06);
+      margin: 20px auto;
+    }
+    
+    .section-title {
+      text-align: center;
+      margin-bottom: 80px;
+      padding-top: 20px;
+    }
+    
+    .section-title h2 {
+      font-size: 42px;
+      background: var(--gradient-1);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 25px;
+      position: relative;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+    
+    .section-title h2:after {
+      content: '';
+      display: block;
+      width: 80px;
+      height: 4px;
+      background: var(--gradient-1);
+      margin: 25px auto;
+      border-radius: 2px;
+    }
+    
+    .section-title p {
+      color: #6c757d;
+      max-width: 800px;
+      margin: 0 auto;
+      font-size: 20px;
+      line-height: 1.8;
+      letter-spacing: 0.2px;
+    }
+
+    .card {
+      border: none;
+      border-radius: 25px;
+      box-shadow: 0 20px 40px rgba(65, 88, 208, 0.15);
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      background: rgba(255, 255, 255, 0.95);
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      position: relative;
+    }
+    
+    .destinations .card {
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 20px 40px rgba(14, 165, 233, 0.15);
+    }
+    
+    .destinations .card-body {
+      color: #334155;
+    }
+    
+    .destinations .card-title {
+      color: #0284c7;
+      font-weight: 700;
+    }
+    
+    .destinations .card-text {
+      color: #475569;
+    }
+    
+    .destinations .destination-card {
+      box-shadow: 0 20px 40px rgba(14, 165, 233, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    .destinations .destination-card:hover {
+      box-shadow: 0 25px 50px rgba(14, 165, 233, 0.25);
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-radius: 25px;
+      padding: 2px;
+      background: var(--gradient-1);
+      -webkit-mask: 
+        linear-gradient(#fff 0 0) content-box, 
+        linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-12px) scale(1.02);
+      box-shadow: 0 30px 60px rgba(72, 84, 208, 0.15);
+      background: rgba(255, 255, 255, 0.95);
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    .card-img-top {
+      height: 250px;
+      object-fit: cover;
+      transform: scale(1);
+      transition: transform 0.8s ease;
+    }
+
+    .card:hover .card-img-top {
+      transform: scale(1.1);
+    }
+
+    .card-body {
+      padding: 2rem 1.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .card .badge {
+      padding: 8px 15px;
+      border-radius: 15px;
+      font-weight: 500;
+      font-size: 0.85rem;
+      letter-spacing: 0.5px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    /* Destination Cards Container */
+    .destinations .row {
+      margin: 0 -25px;
+    }
+    
+    .destinations .col-md-6,
+    .destinations .col-lg-4 {
+      padding: 25px;
+    }
+    
+    .destination-card {
+      border-radius: 25px;
+      overflow: hidden;
+      box-shadow: 0 15px 35px rgba(72, 84, 208, 0.12);
+      position: relative;
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      background: white;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      height: 450px;
+      margin: 0;
+    }
+    
+    .destination-card:hover {
+      box-shadow: 0 30px 60px rgba(72, 84, 208, 0.25);
+      transform: translateY(-10px);
+    }
+    
+    @media (min-width: 992px) {
+      .destinations .col-lg-4 {
+        flex: 0 0 33.333333%;
+        max-width: 33.333333%;
+      }
+    }
+    
+    @media (max-width: 991px) {
+      .destinations .row {
+        margin: 0 -15px;
+      }
+      
+      .destinations .col-md-6 {
+        padding: 15px;
+      }
+      
+      .destination-card {
+        height: 400px;
+      }
+    }
+
+    .destination-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        180deg,
+        rgba(0, 0, 0, 0.2) 0%,
+        rgba(0, 0, 0, 0.3) 50%,
+        rgba(0, 0, 0, 0.7) 100%
+      );
+      opacity: 0;
+      transition: opacity 0.6s ease;
+      z-index: 1;
+    }
+
+    .destination-card:hover::before {
+      opacity: 1;
+    }
+
+    .destination-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.8s ease;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .destination-card:hover img {
+      transform: scale(1.1);
+    }
+
+    .destination-content {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 3rem 2rem;
+      background: linear-gradient(
+        to top,
+        rgba(0, 0, 0, 0.95) 0%,
+        rgba(0, 0, 0, 0.8) 40%,
+        transparent 100%
+      );
+      color: white;
+      transform: translateY(30px);
+      opacity: 0;
+      transition: all 0.6s ease;
+      z-index: 2;
+    }
+
+    .destination-card:hover .destination-content {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .destination-content h3 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      font-weight: 700;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      letter-spacing: 0.5px;
+    }
+
+    .destination-content p {
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      opacity: 0.9;
+    }
+
+    .destination-content .btn-travel {
+      padding: 0.8rem 1.5rem;
+      font-size: 0.9rem;
+      background: var(--gradient-2);
+      border: none;
+      background-size: 200% auto;
+      transition: all 0.5s ease;
+    }
+
+    .social-links a {
+      color: white;
+      font-size: 20px;
+      transition: color 0.3s ease;
+    }
+
+    .social-links a:hover {
+      color: var(--primary-color);
+    }
+
+    .newsletter {
+      background: var(--gradient-2);
+      color: white;
+      padding: 80px 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .newsletter::before {
+      content: '';
+      position: absolute;
+      width: 150%;
+      height: 150%;
+      background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 60%);
+      top: -25%;
+      left: -25%;
+      animation: rotate 20s linear infinite;
+    }
+
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .newsletter h2 {
+      margin-bottom: 20px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .newsletter .form-control {
+      border-radius: 30px 0 0 30px;
+      height: 50px;
+      background: rgba(255, 255, 255, 0.9);
+      border: none;
+      backdrop-filter: blur(5px);
+    }
+
+    .newsletter .btn {
+      border-radius: 0 30px 30px 0;
+      height: 50px;
+      padding: 0 30px;
+      background: var(--gradient-1);
+      border: none;
+      background-size: 200% auto;
+      transition: all 0.5s ease;
+    }
+
+    .newsletter .btn:hover {
+      background-position: right center;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+    
+    .about-content {
+      display: flex;
+      align-items: center;
+      gap: 50px;
+    }
+    
+    .about-text {
+      flex: 1;
+    }
+    
+    .about-image {
+      flex: 1;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    
+    .about-image img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    
+    /* Menu Section */
+    .menu {
+      background: #f9f9f9;
+    }
+    
+    .menu-items {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin-top: 50px;
+    }
+    
+    .menu-item {
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      transition: transform 0.3s ease;
+    }
+    
+    .menu-item:hover {
+      transform: translateY(-10px);
+    }
+    
+    .menu-item img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+    
+    .menu-item-content {
+      padding: 20px;
+    }
+    
+    .menu-item h3 {
+      margin-bottom: 10px;
+      color: #2c3e50;
+    }
+    
+    .menu-item p {
+      color: #7f8c8d;
+      margin-bottom: 15px;
+    }
+    
+    .price {
+      font-weight: 700;
+      color: #e67e22;
+      font-size: 18px;
+    }
+    
+    /* CTA Section */
+    .cta {
+      background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+      background-size: cover;
+      background-position: center;
+      color: white;
+      text-align: center;
+    }
+    
+    .cta h2 {
+      font-size: 42px;
+      margin-bottom: 20px;
+    }
+    
+    .cta p {
+      max-width: 700px;
+      margin: 0 auto 30px;
+      font-size: 18px;
+    }
+    
+    /* Footer */
+    footer {
+      background: #2c3e50;
+      color: white;
+      padding: 50px 0 20px;
+      text-align: center;
+    }
+    
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+    }
+    
+    .footer-section {
+      flex: 1;
+      min-width: 250px;
+      margin-bottom: 30px;
+    }
+    
+    .footer-section h3 {
+      margin-bottom: 20px;
+      font-size: 20px;
+    }
+    
+    .footer-section p, .footer-section a {
+      color: #bdc3c7;
+      margin-bottom: 10px;
+      display: block;
+    }
+    
+    .footer-section a:hover {
+      color: #e67e22;
+    }
+    
+    .copyright {
+      border-top: 1px solid #34495e;
+      padding-top: 20px;
+      color: #bdc3c7;
+    }
+
+    /* Story Modal Styles */
+    #storyModal .modal-content {
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    #storyModal .modal-body {
+      line-height: 1.8;
+      color: #333;
+    }
+
+    #storyModal .modal-body img {
+      width: 100%;
+      border-radius: 15px;
+      margin: 20px 0;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    #storyModal .story-section {
+      margin-bottom: 25px;
+    }
+
+    #storyModal .story-section h6 {
+      color: var(--primary-color);
+      font-weight: 600;
+      margin-bottom: 10px;
+      font-size: 18px;
+    }
+
+    #storyModal .story-section h6 i {
+      margin-right: 8px;
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="container header-container">
+      <div class="logo"><i class="fas fa-globe-americas"></i>Wander<span>Chronicles</span></div>
+      <nav>
+        <a href="{% url 'data' %}">Home</a>
+        <a href="{% url 'about' %}">About</a>
+        <a href="{% url 'menu' %}">Destinations</a>
+        <a href="{% url 'plan_trip' %}">Plan</a>
+        <a href="{% url 'contact' %}">Contact</a>
+        <a href="{% url 'create_journal' %}">Journal</a>
+        {% if request.user.is_authenticated %}
+        <a href="{% url 'my_bookings' %}">My Trips</a>
+        <a href="{% url 'logout' %}">Logout</a>
+        {% else %}
+        <a href="{% url 'login' %}">Login</a>
+        <a href="{% url 'register' %}">Register</a>
+        {% endif %}
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Carousel Section -->
+  <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+      <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"></button>
+      <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
+      <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
+    </div>
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <img src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800" alt="Adventure Travel">
+        <div class="carousel-caption">
+          <h1>Discover Your Next Adventure</h1>
+          <p>Explore breathtaking destinations and create unforgettable memories</p>
+          <a href="{% url 'menu' %}" class="btn-travel">Explore Destinations</a>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <img src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1" alt="Mountain View">
+        <div class="carousel-caption">
+          <h1>Share Your Journey</h1>
+          <p>Connect with fellow travelers and share your incredible stories</p>
+          <a href="#stories" class="btn-travel">Read Stories</a>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e" alt="Beach Paradise">
+        <div class="carousel-caption">
+          <h1>Plan Your Escape</h1>
+          <p>Let us help you create the perfect travel itinerary</p>
+          <a href="{% url 'plan_trip' %}" class="btn-travel">Start Planning</a>
+        </div>
+      </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon"></span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+      <span class="carousel-control-next-icon"></span>
+    </button>
+  </div>
+
+  <!-- Featured Stories Section -->
+  <section class="about" id="stories">
+    <div class="container">
+      <div class="section-title">
+        <h2>Featured Travel Stories</h2>
+        <p>Get inspired by amazing adventures and experiences shared by our community of passionate travelers</p>
+      </div>
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="card h-100">
+            <img src="https://images.unsplash.com/photo-1533105079780-92b9be482077" class="card-img-top" alt="Backpacking in Asia">
+            <div class="card-body">
+              <span class="badge bg-primary mb-2">Asia</span>
+              <h5 class="card-title">Backpacking Through Southeast Asia</h5>
+              <p class="card-text">A three-month journey discovering the hidden gems of Thailand, Vietnam, and Cambodia.</p>
+              <button type="button" class="btn-travel" data-bs-toggle="modal" data-bs-target="#storyModal" data-story="1">Read More</button>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card h-100">
+            <img src="https://images.unsplash.com/photo-1516483638261-f4dbaf036963" class="card-img-top" alt="European Adventure">
+            <div class="card-body">
+              <span class="badge bg-success mb-2">Europe</span>
+              <h5 class="card-title">European Rail Adventure</h5>
+              <p class="card-text">Exploring 8 countries in 30 days by train, from Paris to Istanbul.</p>
+              <button type="button" class="btn-travel" data-bs-toggle="modal" data-bs-target="#storyModal" data-story="2">Read More</button>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card h-100">
+            <img src="https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b" class="card-img-top" alt="Mountain Trek">
+            <div class="card-body">
+              <span class="badge bg-danger mb-2">Adventure</span>
+              <h5 class="card-title">Conquering Mount Kilimanjaro</h5>
+              <p class="card-text">A life-changing journey to Africa's highest peak.</p>
+              <button type="button" class="btn-travel" data-bs-toggle="modal" data-bs-target="#storyModal" data-story="3">Read More</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Popular Destinations Section -->
+  <section class="destinations" id="destinations">
+    <div class="container">
+      <div class="section-title">
+        <h2>Popular Destinations</h2>
+        <p>Discover the most sought-after locations and start planning your next adventure</p>
+      </div>
+      <div class="row">
+        <div class="col-md-6 col-lg-4">
+          <div class="destination-card">
+            <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=1000&auto=format" alt="Paris">
+            <div class="destination-content">
+              <h3>Paris, France</h3>
+              <p class="mb-3">
+                <i class="fas fa-star text-warning"></i>
+                <i class="fas fa-star text-warning"></i>
+                <i class="fas fa-star text-warning"></i>
+                <i class="fas fa-star text-warning"></i>
+                <i class="fas fa-star-half text-warning"></i>
+                <span class="ms-2">4.8 (2.5k reviews)</span>
+              </p>
+              <p class="mb-4">Experience the city of love and its iconic landmarks</p>
+              <a href="#" class="btn-travel">View Guide</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <div class="destination-card">
+            <img src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?q=80&w=1000&auto=format" alt="Tokyo">
+            <div class="destination-content">
+              <h3>Tokyo, Japan</h3>
+              <p class="mb-2">
+                <i class="fas fa-star text-warning"></i>
+                <i class="fas fa-star text-warning"></i>
+                <i class="fas fa-star text-warning"></i>
+                <i class="fas fa-star text-warning"></i>
+                <i class="fas fa-star text-warning"></i>
+                <span class="ms-2">4.9 (3.1k reviews)</span>
+              </p>
+              <p>Immerse yourself in the blend of tradition and modernity</p>
+              <a href="#" class="btn-travel">View Guide</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <div class="destination-card">
+            <img src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=1000&auto=format" alt="Bali">
+            <div class="destination-content">
+              <h3>Bali, Indonesia</h3>
+              <p class="mb-2">
+                <i class="fas fa-star text-warning"></i>
+                <i class="fas fa-star text-warning"></i>
+                <i class="fas fa-star text-warning"></i>
+                <i class="fas fa-star text-warning"></i>
+                <i class="fas fa-star-half text-warning"></i>
+                <span class="ms-2">4.7 (1.8k reviews)</span>
+              </p>
+              <p>Discover paradise beaches and spiritual temples</p>
+              <a href="#" class="btn-travel">View Guide</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Newsletter Section -->
+  <section class="newsletter py-5 bg-light">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+          <h2>Get Travel Inspiration</h2>
+          <p class="mb-4">Subscribe to our newsletter and receive the latest travel tips, destinations, and exclusive offers.</p>
+          <div class="input-group mb-3">
+            <input type="email" class="form-control" placeholder="Enter your email address" aria-label="Email address">
+            <button class="btn btn-primary" type="button">Subscribe</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer id="contact" class="bg-dark text-white py-5">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4 mb-4">
+          <h3>About WanderChronicles</h3>
+          <p>We're passionate about connecting travelers and sharing authentic experiences from around the world.</p>
+          <div class="social-links mt-3">
+            <a href="#" class="me-3"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="me-3"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="me-3"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
+        <div class="col-md-4 mb-4">
+          <h3>Quick Links</h3>
+          <ul class="list-unstyled">
+            <li><a href="#" class="text-white">Latest Stories</a></li>
+            <li><a href="#" class="text-white">Travel Guides</a></li>
+            <li><a href="#" class="text-white">Travel Tips</a></li>
+            <li><a href="#" class="text-white">Community</a></li>
+          </ul>
+        </div>
+        <div class="col-md-4 mb-4">
+          <h3>Contact Us</h3>
+          <ul class="list-unstyled">
+            <li><i class="fas fa-envelope me-2"></i> letsmail.sahilkumar@gmail.com</li>
+            <li><i class="fas fa-phone me-2"></i> 7903133038</li>
+            <li><i class="fas fa-map-marker-alt me-2"></i> Lovely Professional University, Jalandhar 144411</li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-top border-secondary pt-4 mt-4">
+        <p class="text-center mb-0">&copy; 2025 WanderChronicles. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Story Modal -->
+  <div class="modal fade" id="storyModal" tabindex="-1" aria-labelledby="storyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content" style="border-radius: 20px; border: none; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
+        <div class="modal-header" style="background: var(--gradient-1); color: white; border-radius: 20px 20px 0 0; border: none; padding: 20px 30px;">
+          <h5 class="modal-title" id="storyModalLabel" style="font-weight: 700; font-size: 24px;">Story Title</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" style="padding: 30px; max-height: 70vh; overflow-y: auto;">
+          <div id="storyContent">
+            <!-- Story content will be inserted here -->
+          </div>
+        </div>
+        <div class="modal-footer" style="border: none; padding: 20px 30px; background: #f8f9fa; border-radius: 0 0 20px 20px;">
+          <button type="button" class="btn-travel" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap and Custom Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Story content data
+    const stories = {
+      1: {
+        title: "Backpacking Through Southeast Asia",
+        badge: "Asia",
+        badgeClass: "bg-primary",
+        image: "https://images.unsplash.com/photo-1533105079780-92b9be482077",
+        content: `
+          <img src="https://images.unsplash.com/photo-1533105079780-92b9be482077" alt="Backpacking in Asia" style="width: 100%; border-radius: 15px; margin-bottom: 25px;">
+          <div class="story-section">
+            <h6><i class="fas fa-map-marker-alt"></i> The Journey Begins</h6>
+            <p>My three-month adventure through Southeast Asia started in Bangkok, Thailand, where the vibrant street markets and golden temples immediately captured my heart. The journey was more than just visiting tourist spots; it was about immersing myself in the local culture, trying authentic street food, and connecting with fellow travelers from around the world.</p>
+          </div>
+          <div class="story-section">
+            <h6><i class="fas fa-mountain"></i> Thailand: Land of Smiles</h6>
+            <p>From the bustling streets of Bangkok, I traveled north to Chiang Mai, where I spent a week volunteering at an elephant sanctuary. The experience of caring for these gentle giants was truly humbling. I then headed to the islands of Phuket and Koh Phi Phi, where crystal-clear waters and stunning sunsets made every day feel like paradise.</p>
+          </div>
+          <div class="story-section">
+            <h6><i class="fas fa-bicycle"></i> Vietnam: A Country of Contrasts</h6>
+            <p>Crossing into Vietnam, I embarked on a motorbike journey from Ho Chi Minh City to Hanoi. The 1,600-kilometer ride took me through rice paddies, mountain passes, and coastal roads. In Hoi An, I had custom-made clothes tailored, and in Halong Bay, I kayaked through limestone karsts that rose dramatically from emerald waters.</p>
+          </div>
+          <div class="story-section">
+            <h6><i class="fas fa-temple-buddhist"></i> Cambodia: Ancient Wonders</h6>
+            <p>The final leg of my journey took me to Cambodia, where I spent days exploring the magnificent temples of Angkor Wat. Watching the sunrise over the ancient ruins was a spiritual experience I'll never forget. I also visited the floating villages on Tonlé Sap Lake and learned about the country's complex history.</p>
+          </div>
+          <div class="story-section">
+            <h6><i class="fas fa-heart"></i> Lessons Learned</h6>
+            <p>This journey taught me that the best travel experiences come from stepping outside your comfort zone, saying yes to unexpected opportunities, and being open to learning from different cultures. The kindness of strangers, the beauty of simple moments, and the friendships formed along the way made this the adventure of a lifetime.</p>
+          </div>
+        `
+      },
+      2: {
+        title: "European Rail Adventure",
+        badge: "Europe",
+        badgeClass: "bg-success",
+        image: "https://images.unsplash.com/photo-1516483638261-f4dbaf036963",
+        content: `
+          <img src="https://images.unsplash.com/photo-1516483638261-f4dbaf036963" alt="European Adventure" style="width: 100%; border-radius: 15px; margin-bottom: 25px;">
+          <div class="story-section">
+            <h6><i class="fas fa-train"></i> Starting in Paris</h6>
+            <p>My 30-day European rail adventure began in the City of Light. With a Eurail pass in hand, I explored the iconic landmarks - the Eiffel Tower at sunset, the Louvre's art collections, and charming Montmartre. The efficient train system made it easy to hop from one destination to another.</p>
+          </div>
+          <div class="story-section">
+            <h6><i class="fas fa-route"></i> The Route</h6>
+            <p>From Paris, I traveled through Switzerland's stunning Alpine landscapes, stopping in Zurich and Interlaken. Then it was on to Germany, where I explored Berlin's history and Munich's beer gardens. Austria's Vienna charmed me with its classical music scene, and Budapest's thermal baths provided perfect relaxation.</p>
+          </div>
+          <div class="story-section">
+            <h6><i class="fas fa-landmark"></i> Eastern Europe Discovery</h6>
+            <p>The journey continued through the Balkans - Croatia's stunning coastline, Serbia's vibrant nightlife, and Bulgaria's ancient monasteries. Each country offered unique experiences, from Dubrovnik's medieval walls to Sofia's Soviet-era architecture.</p>
+          </div>
+          <div class="story-section">
+            <h6><i class="fas fa-flag"></i> Final Destination: Istanbul</h6>
+            <p>The adventure culminated in Istanbul, where Europe meets Asia. The city's rich history, stunning mosques, and bustling bazaars created an unforgettable finale. Crossing the Bosphorus by ferry, I felt the unique experience of being in two continents simultaneously.</p>
+          </div>
+          <div class="story-section">
+            <h6><i class="fas fa-compass"></i> Travel Tips</h6>
+            <p>Traveling by train across Europe is one of the most sustainable and enjoyable ways to explore the continent. The Eurail pass offers flexibility, and night trains save both time and accommodation costs. The key is to balance planned stops with spontaneous detours - some of my best memories came from unplanned visits to small towns along the way.</p>
+          </div>
+        `
+      },
+      3: {
+        title: "Conquering Mount Kilimanjaro",
+        badge: "Adventure",
+        badgeClass: "bg-danger",
+        image: "https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b",
+        content: `
+          <img src="https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b" alt="Mountain Trek" style="width: 100%; border-radius: 15px; margin-bottom: 25px;">
+          <div class="story-section">
+            <h6><i class="fas fa-mountain"></i> The Challenge</h6>
+            <p>Standing at 5,895 meters (19,341 feet), Mount Kilimanjaro is Africa's highest peak and the world's tallest free-standing mountain. This seven-day trek was the most physically and mentally challenging experience of my life, but also the most rewarding.</p>
+          </div>
+          <div class="story-section">
+            <h6><i class="fas fa-hiking"></i> The Ascent</h6>
+            <p>We chose the Machame Route, known as the "Whiskey Route" for its difficulty. The journey took us through five distinct climate zones - from tropical rainforest at the base to arctic conditions at the summit. Each day brought new challenges: altitude sickness, freezing temperatures, and the mental battle of pushing forward when every muscle screamed to stop.</p>
+          </div>
+          <div class="story-section">
+            <h6><i class="fas fa-campground"></i> Life on the Mountain</h6>
+            <p>Our days started before sunrise with hot tea and porridge. We hiked for 6-8 hours daily, with our incredible porters carrying all equipment. Evenings were spent in tents, sharing stories with fellow climbers from around the world. The camaraderie and support of the group were essential to our success.</p>
+          </div>
+          <div class="story-section">
+            <h6><i class="fas fa-star"></i> Summit Night</h6>
+            <p>Summit night began at midnight. In complete darkness, with headlamps as our only light, we began the final 1,200-meter ascent. The air was thin, every step required immense effort, and the cold was bone-chilling. But as the sun rose over the African plains, painting the sky in hues of orange and pink, I knew we were close.</p>
+          </div>
+          <div class="story-section">
+            <h6><i class="fas fa-trophy"></i> Reaching Uhuru Peak</h6>
+            <p>Standing at Uhuru Peak, the highest point on Kilimanjaro, was an indescribable moment. The sense of accomplishment, the breathtaking 360-degree view, and the realization that I had pushed beyond my limits was overwhelming. This journey taught me that with determination, proper preparation, and the right support, we can achieve what seems impossible.</p>
+          </div>
+          <div class="story-section">
+            <h6><i class="fas fa-lightbulb"></i> What I Learned</h6>
+            <p>Climbing Kilimanjaro isn't just about physical strength - it's about mental resilience, pacing yourself, and trusting your guides. The mountain demands respect, and those who rush or ignore altitude warnings often fail. This experience reminded me that the greatest adventures require both preparation and the courage to face the unknown.</p>
+          </div>
+        `
+      }
+    };
+
+    // Handle story modal
+    const storyModal = document.getElementById('storyModal');
+    if (storyModal) {
+      storyModal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget;
+        const storyId = button.getAttribute('data-story');
+        const story = stories[storyId];
+        
+        if (story) {
+          const modalTitle = storyModal.querySelector('#storyModalLabel');
+          const modalBody = storyModal.querySelector('#storyContent');
+          
+          modalTitle.textContent = story.title;
+          modalBody.innerHTML = `
+            <span class="badge ${story.badgeClass} mb-3">${story.badge}</span>
+            ${story.content}
+          `;
+        }
+      });
+    }
+
+    // Initialize tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+  </script>
+</body>
+</html>

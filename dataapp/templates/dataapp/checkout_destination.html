@@ -1,0 +1,232 @@
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Destination Checkout - WanderChronicles</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Poppins', sans-serif;
+            padding: 20px;
+        }
+        .checkout-container {
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 12px 35px rgba(34, 60, 80, 0.25);
+            width: 520px;
+            max-width: 95vw;
+            padding: 40px 35px 35px 35px;
+            position: relative;
+            animation: fadeInUp 0.9s cubic-bezier(.39,.575,.565,1) both;
+        }
+        @keyframes fadeInUp{
+            0%{transform:translateY(40px);opacity:0}
+            100%{transform:translateY(0);opacity:1}
+        }
+        .checkout-header {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 14px 14px 0 0;
+            padding: 28px 0 20px 0;
+            text-align: center;
+            margin: -40px -35px 25px -35px;
+            box-shadow: 0 2px 10px #0002;
+        }
+        .checkout-header h2 {
+            margin: 0;
+            font-size: 2rem;
+            letter-spacing: 1px;
+        }
+        .messages {
+            margin-bottom: 15px;
+        }
+        .message {
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+        .message.error { background: #ffe6e9; color: #a10f2b; }
+        .message.success { background: #e6fffa; color: #0b5341; }
+        .destination-info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .destination-info p {
+            margin: 5px 0;
+            color: #555;
+        }
+        .booking-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .booking-info label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #555;
+        }
+        .select-control {
+            width: 100%;
+            padding: 13px 12px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color .23s;
+            background: #fff;
+            margin-bottom: 12px;
+        }
+        .select-control:focus {
+            border-color: #667eea;
+            outline: none;
+            box-shadow: 0 0 0 2.5px #667eea80;
+        }
+        .booking-details {
+            margin-bottom: 30px;
+        }
+        .booking-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 12px 0;
+        }
+        .booking-list li {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px dashed #E0E8EF;
+            font-size: 1.05rem;
+        }
+        .booking-amount {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(90deg, #f7971e 0%, #ffd200 100%);
+            color: #222;
+            border-radius: 8px;
+            font-size: 1.15rem;
+            font-weight: 600;
+            padding: 14px 20px;
+            margin-top: 14px;
+            box-shadow: 0 2px 7px #ffd40047;
+        }
+        .confirm-btn {
+            display: block;
+            width: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            border: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            padding: 15px;
+            border-radius: 40px;
+            margin-top: 10px;
+            cursor: pointer;
+            box-shadow: 0 6px 24px rgba(102, 126, 234, 0.3);
+            letter-spacing: 0.5px;
+            transition: .2s;
+        }
+        .confirm-btn:hover, .confirm-btn:focus {
+            background: linear-gradient(90deg, #764ba2 0%, #667eea 100%);
+            box-shadow: 0 8px 30px #667eea22;
+            transform: translateY(-2px) scale(1.01);
+        }
+    </style>
+</head>
+<body>
+    <div class="checkout-container">
+        <div class="checkout-header">
+            <h2><i class="fas fa-plane"></i> Confirm Your Booking</h2>
+            <p style="font-size:1.05rem;letter-spacing:0.5px;margin-top:7px;">Enter your details to secure this trip</p>
+        </div>
+
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="destination-info">
+            <p><strong>Destination:</strong> {{ destination_name }}</p>
+            <p><strong>Package Price:</strong> ₹{{ package_price|intcomma }}</p>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="destination" value="{{ destination_name }}">
+            <input type="hidden" name="price" value="{{ package_price }}">
+
+            <div class="booking-info">
+                <h3 style="margin-top:0;margin-bottom:15px;color:#333;">Traveller Details</h3>
+                <label for="inputName">Full Name *</label>
+                <input type="text" id="inputName" name="full_name" class="select-control" placeholder="Enter your full name" value="{{ form_data.full_name }}" required>
+
+                <label for="inputEmail">Email Address *</label>
+                <input type="email" id="inputEmail" name="email" class="select-control" placeholder="your.email@example.com" value="{{ form_data.email }}" required>
+
+                <label for="inputPhone">Phone Number *</label>
+                <input type="tel" id="inputPhone" name="phone" class="select-control" placeholder="+91 1234567890" value="{{ form_data.phone }}" required>
+
+                <label for="inputDates">Travel Dates</label>
+                <input type="text" id="inputDates" name="dates" class="select-control flatpickr" placeholder="Select your travel dates (optional)" value="{{ form_data.dates }}">
+
+                <label for="inputTravelers">Number of Travellers</label>
+                <input type="number" id="inputTravelers" name="travelers" class="select-control" min="1" value="{{ form_data.travelers|default:'1' }}">
+            </div>
+
+            <div class="booking-details">
+                <ul class="booking-list">
+                    <li><span>Destination Package</span><span>₹{{ pricing.package|intcomma }}</span></li>
+                    <li><span>Service Fee</span><span>₹{{ pricing.service_fee|intcomma }}</span></li>
+                    <li><span>Taxes & Charges</span><span>₹{{ pricing.taxes|intcomma }}</span></li>
+                </ul>
+                <div class="booking-amount">
+                    <span>Total Amount</span>
+                    <span>₹{{ pricing.total|intcomma }}</span>
+                </div>
+            </div>
+
+            <div class="booking-info" style="margin-bottom:0;">
+                <label for="paymentMethod" style="margin-bottom:10px;">Select Payment Method</label>
+                <select class="select-control" id="paymentMethod" name="payment_method" required>
+                    <option value="" {% if not form_data.payment_method %}selected{% endif %}>Choose a payment option</option>
+                    <option value="upi" {% if form_data.payment_method == "upi" %}selected{% endif %}>UPI</option>
+                    <option value="ecash" {% if form_data.payment_method == "ecash" %}selected{% endif %}>E-Cash Wallet</option>
+                    <option value="card" {% if form_data.payment_method == "card" %}selected{% endif %}>Credit/Debit Card</option>
+                    <option value="netbanking" {% if form_data.payment_method == "netbanking" %}selected{% endif %}>Net Banking</option>
+                </select>
+                <button type="submit" class="confirm-btn">Confirm Booking</button>
+            </div>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            flatpickr("#inputDates", {
+                mode: "range",
+                minDate: "today",
+                dateFormat: "Y-m-d",
+                altInput: true,
+                altFormat: "F j, Y"
+            });
+        });
+    </script>
+</body>
+</html>
+

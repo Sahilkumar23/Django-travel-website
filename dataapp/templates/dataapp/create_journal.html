@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Journal - WanderChronicles</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* Global Styles */
+    :root {
+      --primary-color: #2196f3;
+      --secondary-color: #03a9f4;
+      --accent-color: #ff9800;
+      --text-color: #333;
+      --light-bg: #f8f9fa;
+      --dark-bg: #212529;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body { 
+      background: var(--light-bg); 
+      font-family: "Poppins", sans-serif; 
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* Header Styles - Universal Navigation */
+    header {
+      background: rgba(33, 37, 41, 0.9);
+      backdrop-filter: blur(10px);
+      color: white;
+      padding: 20px 0;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 28px;
+      font-weight: 700;
+      font-family: 'Playfair Display', serif;
+      text-decoration: none;
+      color: white;
+    }
+
+    .logo span {
+      color: var(--accent-color);
+    }
+
+    .logo i {
+      color: var(--primary-color);
+      margin-right: 10px;
+    }
+
+    nav a {
+      margin-left: 30px;
+      font-weight: 500;
+      transition: color 0.3s ease;
+      color: white;
+      text-decoration: none;
+    }
+
+    nav a:hover {
+      color: var(--primary-color);
+    }
+
+    .layout { 
+      display: grid; 
+      grid-template-columns: 2fr 1fr; 
+      gap: 24px; 
+      margin-top: 120px; 
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 0 20px;
+    }
+
+    .editor-card { 
+      border: none; 
+      border-radius: 20px; 
+      box-shadow: 0 6px 30px rgba(33, 150, 243, 0.12); 
+      background: #fff;
+      padding: 40px; 
+      transition: all 0.3s ease;
+    }
+    
+    .editor-card:hover {
+      box-shadow: 0 8px 40px rgba(33, 150, 243, 0.18);
+    }
+    
+    .editor-title {
+      width: 100%;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      outline: none;
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      padding: 14px 18px;
+      transition: all 0.3s ease;
+      color: var(--text-color);
+    }
+    
+    .editor-title:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+    }
+    
+    .editor-sub {
+      display: grid; 
+      grid-template-columns: 1fr 1fr; 
+      gap: 16px; 
+      margin-bottom: 20px;
+    }
+    
+    .editor-sub .form-control {
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      padding: 12px 16px;
+      transition: all 0.3s ease;
+      font-size: 14px;
+    }
+    
+    .editor-sub .form-control:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+      outline: none;
+    }
+    
+    .editor-desc {
+      width: 100%;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      outline: none;
+      font-size: 16px;
+      line-height: 1.8;
+      min-height: 250px;
+      resize: vertical;
+      padding: 16px 18px;
+      transition: all 0.3s ease;
+      font-family: 'Poppins', sans-serif;
+      color: var(--text-color);
+    }
+    
+    .editor-desc:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+    }
+    
+    .cover-preview { 
+      width: 100%; 
+      height: 280px; 
+      object-fit: cover; 
+      border-radius: 12px; 
+      display: none; 
+      margin-top: 16px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    
+    .btn-primary {
+      background: var(--primary-color);
+      border: none;
+      border-radius: 10px;
+      padding: 12px 28px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+    }
+    
+    .btn-primary:hover {
+      background: var(--secondary-color);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
+    }
+    
+    .btn-outline-secondary {
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      padding: 12px 28px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      color: var(--text-color);
+    }
+    
+    .btn-outline-secondary:hover {
+      background: #f8f9fa;
+      border-color: #d0d0d0;
+      transform: translateY(-2px);
+    }
+    .recent { 
+      position: sticky; 
+      top: 100px; 
+      height: max-content; 
+      background: #fff; 
+      border-radius: 20px; 
+      box-shadow: 0 6px 25px rgba(33, 150, 243, 0.1);
+      padding: 24px; 
+      transition: all 0.3s ease;
+    }
+    
+    .recent:hover {
+      box-shadow: 0 8px 35px rgba(33, 150, 243, 0.15);
+    }
+    .recent h5 { font-weight: 700; margin-bottom: 10px; }
+    .recent-item { display: grid; grid-template-columns: 72px 1fr; gap: 12px; padding: 10px 0; border-bottom: 1px solid #f1f3f5; }
+    .recent-item:last-child { border-bottom: none; }
+    .recent-thumb { width: 72px; height: 72px; border-radius: 8px; object-fit: cover; background: #f1f3f5; }
+    .recent-title { font-weight: 600; margin: 0; font-size: 14px; }
+    .recent-meta { color: #6c757d; font-size: 12px; }
+
+    @media (max-width: 768px) {
+      .header-container {
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      nav {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 10px;
+      }
+
+      nav a {
+        margin-left: 0;
+        font-size: 14px;
+      }
+
+      .layout { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Universal Navigation Header -->
+  <header>
+    <div class="container header-container">
+      <a href="{% url 'data' %}" class="logo"><i class="fas fa-globe-americas"></i>Wander<span>Chronicles</span></a>
+      <nav>
+        <a href="{% url 'data' %}">Home</a>
+        <a href="{% url 'about' %}">About</a>
+        <a href="{% url 'menu' %}">Destinations</a>
+        <a href="{% url 'plan_trip' %}">Plan</a>
+        <a href="{% url 'contact' %}">Contact</a>
+        <a href="{% url 'create_journal' %}">Journal</a>
+        {% if request.user.is_authenticated %}
+        <a href="{% url 'my_bookings' %}">My Trips</a>
+        <a href="{% url 'logout' %}">Logout</a>
+        {% else %}
+        <a href="{% url 'login' %}">Login</a>
+        <a href="{% url 'register' %}">Register</a>
+        {% endif %}
+      </nav>
+    </div>
+  </header>
+
+  <div class="container layout">
+    <div class="editor-card">
+      <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="text" name="title" class="editor-title" placeholder="Title" value="{{ form.title.value|default:'' }}" required>
+        <div class="editor-sub">
+          <input type="text" name="location" class="form-control" placeholder="Location" value="{{ form.location.value|default:'' }}" required>
+          <input type="file" name="cover" class="form-control" accept="image/*" id="coverInput">
+        </div>
+        <textarea name="description" class="editor-desc" placeholder="Tell your story..." required>{{ form.description.value|default:'' }}</textarea>
+        <img id="coverPreview" class="cover-preview" alt="Cover preview">
+        <div style="display:flex; gap:10px; margin-top:12px;">
+          <button class="btn btn-primary" type="submit">Publish</button>
+          <a href="{% url 'data' %}" class="btn btn-outline-secondary">Cancel</a>
+        </div>
+      </form>
+    </div>
+    <aside class="recent">
+      <h5>Recent Journals</h5>
+      {% for j in recent_journals %}
+        <div class="recent-item">
+          {% if j.cover %}
+            <img src="{{ j.cover.url }}" class="recent-thumb" alt="{{ j.title }}">
+          {% else %}
+            <div class="recent-thumb"></div>
+          {% endif %}
+          <div>
+            <p class="recent-title">{{ j.title }}</p>
+            <div class="recent-meta">{{ j.location }} · {{ j.date }}</div>
+            {% if j.pk %}
+              <a href="{% url 'travel_map' j.pk %}" class="btn btn-sm btn-link p-0">Read</a>
+            {% else %}
+              <a href="#" class="btn btn-sm btn-link p-0" onclick="alert('This is an example journal entry. Create your own journal to share your travel stories!'); return false;">Read</a>
+            {% endif %}
+          </div>
+        </div>
+      {% empty %}
+        <p class="text-muted" style="margin:0;">No journals yet.</p>
+      {% endfor %}
+    </aside>
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const input = document.getElementById('coverInput');
+      const preview = document.getElementById('coverPreview');
+      if (input) {
+        input.addEventListener('change', (e) => {
+          const file = e.target.files && e.target.files[0];
+          if (!file) { preview.style.display = 'none'; return; }
+          const reader = new FileReader();
+          reader.onload = () => { preview.src = reader.result; preview.style.display = 'block'; };
+          reader.readAsDataURL(file);
+        });
+      }
+    });
+  </script>
+</body>
+</html>
+
+

@@ -1,0 +1,177 @@
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Trips - WanderChronicles</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f4f6fb;
+      margin: 0;
+      min-height: 100vh;
+    }
+    header {
+      background: #14213d;
+      color: #fff;
+      padding: 20px 0;
+    }
+    .header-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+    }
+    nav a {
+      color: #fff;
+      margin-left: 20px;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+    .page-container {
+      max-width: 1100px;
+      margin: 30px auto;
+      background: #fff;
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 15px 40px rgba(20,33,61,0.08);
+    }
+    h2 {
+      margin-top: 0;
+      color: #14213d;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      padding: 14px;
+      text-align: left;
+      border-bottom: 1px solid #eef2fb;
+      font-size: 0.95rem;
+    }
+    th {
+      background: #f0f4ff;
+      font-weight: 600;
+      color: #14213d;
+    }
+    .status {
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      text-transform: capitalize;
+    }
+    .status.confirmed { background: #e6fffa; color: #0f766e; }
+    .status.pending { background: #fff7e6; color: #b45309; }
+    .status.cancelled { background: #ffe6e6; color: #b91c1c; }
+    .actions a {
+      color: #2563eb;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .empty-state {
+      text-align: center;
+      padding: 40px 0;
+      color: #6b7280;
+    }
+    @media (max-width: 768px) {
+      table, thead, tbody, th, td, tr {
+        display: block;
+      }
+      th {
+        display: none;
+      }
+      td {
+        position: relative;
+        padding-left: 50%;
+        border: none;
+        border-bottom: 1px solid #eef2fb;
+      }
+      td::before {
+        position: absolute;
+        left: 16px;
+        width: 45%;
+        white-space: nowrap;
+        font-weight: 600;
+        content: attr(data-label);
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-container">
+      <div style="font-size:1.3rem; font-weight:600;">Wander<span style="color:#fca311;">Chronicles</span></div>
+      <nav>
+        <a href="{% url 'data' %}">Home</a>
+        <a href="{% url 'plan_trip' %}">Plan</a>
+        <a href="{% url 'create_journal' %}">Journal</a>
+        <a href="{% url 'logout' %}">Logout</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="page-container">
+    <h2>Your Trips</h2>
+    <p style="color:#6b7280;">Track every itinerary you have created with WanderChronicles.</p>
+
+    {% if bookings %}
+      <table>
+        <thead>
+          <tr>
+            <th>Destination</th>
+            <th>Dates</th>
+            <th>Travellers</th>
+            <th>Budget</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for booking in bookings %}
+          <tr>
+            <td data-label="Destination">
+              <strong>{{ booking.destination|title }}</strong><br>
+              <small>{{ booking.accommodation|title }} • {{ booking.trip_type|default:"Leisure" }}</small>
+            </td>
+            <td data-label="Dates">
+              {% if booking.depart_date %}
+                {{ booking.depart_date }}{% if booking.return_date %} → {{ booking.return_date }}{% endif %}
+              {% else %}
+                Flexible
+              {% endif %}
+            </td>
+            <td data-label="Travellers">{{ booking.adults }} Adult(s){% if booking.children %}, {{ booking.children }} Child(ren){% endif %}</td>
+            <td data-label="Budget">₹{{ booking.total_amount|intcomma }}</td>
+            <td data-label="Status">
+              <span class="status {{ booking.status }}">{{ booking.get_status_display }}</span>
+            </td>
+            <td data-label="Actions" class="actions">
+              {% if booking.status == "confirmed" %}
+                <a href="{% url 'confirm' booking.id %}">View receipt</a>
+              {% elif booking.status == "pending" %}
+                <a href="{% url 'checkout_plan' %}?booking={{ booking.id }}">Complete checkout</a>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <div class="empty-state">
+        <p>No bookings yet. Ready for your next adventure?</p>
+        <a href="{% url 'plan_trip' %}" style="color:#2563eb; font-weight:600;">Start planning →</a>
+      </div>
+    {% endif %}
+  </div>
+</body>
+</html>
+

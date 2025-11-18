@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register - WanderChronicles</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #4361ee;
+      --secondary-color: #3f37c9;
+      --accent-color: #f72585;
+      --text-color: #2d3748;
+      --white: #ffffff;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #4361ee 0%, #3f37c9 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 520px;
+      background: rgba(255,255,255,0.96);
+      padding: 2.5rem;
+      border-radius: 18px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+      position: relative;
+    }
+
+    .logo { text-align: center; margin-bottom: 1.25rem; }
+    .logo h1 { color: var(--primary-color); font-size: 2rem; }
+    .logo span { color: var(--secondary-color); }
+
+    .form-group { margin-bottom: 1rem; }
+    .form-group label { display:block; margin-bottom:6px; color:var(--text-color); font-weight:500; }
+    .form-group input {
+      width:100%; padding:12px 14px; border-radius:10px; border:1px solid #e6eefb; font-size:1rem;
+      transition: box-shadow .2s, border-color .2s;
+    }
+    .form-group input:focus { outline:none; border-color:var(--primary-color); box-shadow:0 6px 18px rgba(67,97,238,0.12); }
+
+    .submit-btn {
+      width:100%; padding:12px; border-radius:10px; border:none; cursor:pointer;
+      background: linear-gradient(135deg,var(--primary-color) 0%, var(--secondary-color) 100%);
+      color:var(--white); font-weight:600; font-size:1rem;
+    }
+
+    .submit-btn:active { transform: translateY(0); }
+
+    .links { text-align:center; margin-top:1rem; }
+    .links a { color:var(--primary-color); text-decoration:none; font-weight:500; }
+    .divider { margin:0 10px; color:#a0aec0; }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">
+      <h1>Wander<span>Chronicles</span></h1>
+      <p style="color:#666; margin-top:6px;">Create your account and start planning</p>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div style="color: {% if message.tags == 'error' %}#f72585{% else %}#4361ee{% endif %}; margin-bottom: 15px; text-align: center; font-size: 0.9rem; padding: 10px; background: {% if message.tags == 'error' %}rgba(247, 37, 133, 0.1){% else %}rgba(67, 97, 238, 0.1){% endif %}; border-radius: 8px;">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="post" action="{% url 'register' %}">
+      {% csrf_token %}
+      {% if form.non_field_errors %}
+        <div style="color:#f72585; margin-bottom:10px; font-size:0.9rem;">
+          {{ form.non_field_errors|join:", " }}
+        </div>
+      {% endif %}
+      <div class="form-group">
+        <label for="{{ form.full_name.id_for_label }}">Full Name</label>
+        <input type="text" id="{{ form.full_name.id_for_label }}" name="{{ form.full_name.html_name }}" value="{{ form.full_name.value|default_if_none:'' }}" placeholder="Enter your full name" required>
+        {% if form.full_name.errors %}
+          <small style="color:#f72585">{{ form.full_name.errors|join:", " }}</small>
+        {% endif %}
+      </div>
+
+      <div class="form-group">
+        <label for="{{ form.username.id_for_label }}">Username</label>
+        <input type="text" id="{{ form.username.id_for_label }}" name="{{ form.username.html_name }}" value="{{ form.username.value|default_if_none:'' }}" placeholder="Choose a username" required>
+        {% if form.username.errors %}
+          <small style="color:#f72585">{{ form.username.errors|join:", " }}</small>
+        {% endif %}
+      </div>
+
+      <div class="form-group">
+        <label for="{{ form.email.id_for_label }}">Email</label>
+        <input type="email" id="{{ form.email.id_for_label }}" name="{{ form.email.html_name }}" value="{{ form.email.value|default_if_none:'' }}" placeholder="Enter your email" required>
+        {% if form.email.errors %}
+          <small style="color:#f72585">{{ form.email.errors|join:", " }}</small>
+        {% endif %}
+      </div>
+
+      <div class="form-group">
+        <label for="{{ form.password1.id_for_label }}">Password</label>
+        <input type="password" id="{{ form.password1.id_for_label }}" name="{{ form.password1.html_name }}" placeholder="Create a password" required>
+        {% if form.password1.errors %}
+          <small style="color:#f72585">{{ form.password1.errors|join:", " }}</small>
+        {% endif %}
+      </div>
+
+      <div class="form-group">
+        <label for="{{ form.password2.id_for_label }}">Confirm Password</label>
+        <input type="password" id="{{ form.password2.id_for_label }}" name="{{ form.password2.html_name }}" placeholder="Confirm your password" required>
+        {% if form.password2.errors %}
+          <small style="color:#f72585">{{ form.password2.errors|join:", " }}</small>
+        {% endif %}
+      </div>
+
+      <button type="submit" class="submit-btn">Create Account</button>
+    </form>
+
+    <div class="links">
+      <a href="{% url 'login' %}">Already have an account?</a>
+      <span class="divider">•</span>
+      <a href="{% url 'data' %}">Back to Home</a>
+    </div>
+  </div>
+
+  
+</body>
+</html>

@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plan Trip - WanderChronicles</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* Global Styles */
+    :root {
+      --primary-color: #2196f3;
+      --secondary-color: #03a9f4;
+      --accent-color: #ff9800;
+      --text-color: #333;
+      --light-bg: #f8f9fa;
+      --dark-bg: #212529;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body { 
+      background: var(--light-bg); 
+      font-family: "Poppins", sans-serif; 
+    }
+
+    .page-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* Header Styles - Universal Navigation */
+    header {
+      background: rgba(33, 37, 41, 0.9);
+      backdrop-filter: blur(10px);
+      color: white;
+      padding: 20px 0;
+      position: fixed;
+      width: 100%;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 28px;
+      font-weight: 700;
+      font-family: 'Playfair Display', serif;
+      text-decoration: none;
+      color: white;
+    }
+
+    .logo span {
+      color: var(--accent-color);
+    }
+
+    .logo i {
+      color: var(--primary-color);
+      margin-right: 10px;
+    }
+
+    nav a {
+      margin-left: 30px;
+      font-weight: 500;
+      transition: color 0.3s ease;
+      color: white;
+      text-decoration: none;
+    }
+
+    nav a:hover {
+      color: var(--primary-color);
+    }
+
+    .main-content {
+      padding-top: 100px;
+    }
+
+    .container { 
+      max-width: 1100px; 
+      margin: 0 auto; 
+      display: grid; 
+      grid-template-columns: 1.2fr 1fr; 
+      gap: 20px; 
+    }
+    
+    .card { 
+      background: #fff; 
+      border-radius: 16px; 
+      box-shadow: 0 6px 25px rgba(33, 150, 243, 0.12); 
+      padding: 32px; 
+      transition: all 0.3s ease;
+    }
+    
+    .card:hover {
+      box-shadow: 0 8px 35px rgba(33, 150, 243, 0.18);
+    }
+    
+    #map { 
+      height: 400px; 
+      border-radius: 12px; 
+      box-shadow: 0 4px 15px rgba(33, 150, 243, 0.1);
+      overflow: hidden;
+    }
+    
+    label { 
+      font-weight: 600; 
+      margin-top: 16px; 
+      margin-bottom: 8px;
+      display: block;
+      color: var(--text-color);
+      font-size: 14px;
+    }
+    
+    .form-control {
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 10px 14px;
+      transition: all 0.3s ease;
+      font-size: 14px;
+    }
+    
+    .form-control:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+      outline: none;
+    }
+    
+    .field-row {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-bottom: 8px;
+    }
+    
+    .trip-tabs {
+      display: inline-flex;
+      background: #f1f3f5;
+      border-radius: 10px;
+      padding: 4px;
+      margin-bottom: 12px;
+    }
+    .trip-tab {
+      padding: 8px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      color: #495057;
+      transition: background .2s ease, color .2s ease;
+    }
+    .trip-tab.active {
+      background: #fff;
+      color: var(--primary-color);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+    
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: #f8fafc;
+      border-radius: 999px;
+      border: 1px solid #e9ecef;
+      font-size: 13px;
+      color: #495057;
+    }
+    .pill select, .pill input { border: none; background: transparent; outline: none; }
+    
+    .btn { 
+      background: var(--primary-color); 
+      color: #fff; 
+      border: none; 
+      padding: 14px 28px; 
+      border-radius: 10px; 
+      cursor: pointer; 
+      margin-top: 20px; 
+      transition: all 0.3s ease;
+      font-weight: 600;
+      font-size: 16px;
+      width: 100%;
+      box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+    }
+
+    .btn:hover {
+      background: var(--secondary-color);
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
+    }
+    
+    .btn:active {
+      transform: translateY(-1px);
+    }
+
+    .error-text {
+      color: #f72585;
+      font-size: 0.85rem;
+      margin-top: 4px;
+      display: block;
+    }
+
+    .recent-bookings {
+      margin-top: 30px;
+    }
+
+    .recent-booking-item {
+      border-bottom: 1px solid #f1f3f5;
+      padding: 12px 0;
+    }
+
+    .recent-booking-item:last-child {
+      border-bottom: none;
+    }
+
+    @media (max-width: 768px) {
+      .header-container {
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      nav {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 10px;
+      }
+
+      nav a {
+        margin-left: 0;
+        font-size: 14px;
+      }
+
+      .main-content {
+        padding-top: 140px;
+      }
+
+      .container {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const map = L.map('map').setView([20.5937, 78.9629], 5);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 18, attribution: '© OpenStreetMap'
+      }).addTo(map);
+
+      let markersLayer = L.layerGroup().addTo(map);
+      let routeLayer = L.layerGroup().addTo(map);
+
+      async function geocode(query) {
+        const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`;
+        const res = await fetch(url, { headers: { 'Accept-Language': 'en' }});
+        if (!res.ok) throw new Error('Geocoding failed');
+        const data = await res.json();
+        return data[0] ? [parseFloat(data[0].lat), parseFloat(data[0].lon)] : null;
+      }
+
+      function midpoint(a, b) { return [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2]; }
+
+      const routeBtn = document.getElementById('routeBtn');
+      if (routeBtn) {
+        routeBtn.addEventListener('click', async () => {
+          const from = document.getElementById('fromLocation').value.trim();
+          const to = document.getElementById('toLocation').value.trim();
+          const status = document.getElementById('status');
+          status.textContent = 'Locating...';
+          markersLayer.clearLayers();
+          routeLayer.clearLayers();
+
+          try {
+            const [fromCoord, toCoord] = await Promise.all([geocode(from), geocode(to)]);
+            if (!fromCoord || !toCoord) {
+              status.textContent = 'Could not find one or both locations. Try more specific names.';
+              return;
+            }
+
+            L.marker(fromCoord).bindPopup('From').addTo(markersLayer);
+            L.marker(toCoord).bindPopup('To').addTo(markersLayer);
+            const line = L.polyline([fromCoord, toCoord], { color: 'blue' }).addTo(routeLayer);
+            const mid = midpoint(fromCoord, toCoord);
+            L.marker(mid, { opacity: 0.8 }).bindPopup('Midpoint').addTo(markersLayer);
+
+            map.fitBounds(line.getBounds(), { padding: [30, 30] });
+            status.textContent = 'Route displayed.';
+          } catch (err) {
+            status.textContent = 'Error fetching route.';
+          }
+        });
+      }
+    });
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const one = document.getElementById('oneWayTab');
+      const round = document.getElementById('roundTripTab');
+      const retWrap = document.getElementById('returnDateWrap');
+      const summary = document.getElementById('summary');
+
+      function setOneWay(activeOneWay) {
+        if (!one || !round || !retWrap) return;
+        one.classList.toggle('active', activeOneWay);
+        round.classList.toggle('active', !activeOneWay);
+        retWrap.style.display = activeOneWay ? 'none' : 'block';
+      }
+      if (one && round) {
+        one.addEventListener('click', () => setOneWay(true));
+        round.addEventListener('click', () => setOneWay(false));
+        setOneWay(true);
+      }
+
+      const form = document.getElementById('tripForm');
+      const updateSummary = () => {
+        if (!summary) return;
+        const from = document.getElementById('fromLocation')?.value?.trim() || '';
+        const to = document.getElementById('toLocation')?.value?.trim() || '';
+        const depart = document.getElementById('departDate')?.value || '';
+        const ret = document.getElementById('returnDate')?.value || '';
+        const adults = document.getElementById('adults')?.value || '1';
+        const children = document.getElementById('children')?.value || '0';
+        const cabin = document.getElementById('cabin')?.value || 'Economy';
+        const tripType = document.getElementById('tripType')?.value || '';
+        summary.textContent = `${from} → ${to} | ${depart}${ret ? ' - ' + ret : ''} | ${adults} Adult(s), ${children} Child(ren) | ${cabin} | ${tripType}`;
+      };
+
+      if (form) {
+        form.addEventListener('input', updateSummary);
+      }
+      const routeBtn = document.getElementById('routeBtn');
+      if (routeBtn) {
+        routeBtn.addEventListener('click', updateSummary);
+      }
+    });
+  </script>
+</head>
+<body>
+  <!-- Universal Navigation Header -->
+  <header>
+    <div class="header-container">
+      <a href="{% url 'data' %}" class="logo"><i class="fas fa-globe-americas"></i>Wander<span>Chronicles</span></a>
+      <nav>
+        <a href="{% url 'data' %}">Home</a>
+        <a href="{% url 'about' %}">About</a>
+        <a href="{% url 'menu' %}">Destinations</a>
+        <a href="{% url 'plan_trip' %}">Plan</a>
+        <a href="{% url 'contact' %}">Contact</a>
+        <a href="{% url 'create_journal' %}">Journal</a>
+      {% if request.user.is_authenticated %}
+        <a href="{% url 'my_bookings' %}">My Trips</a>
+        <a href="{% url 'logout' %}">Logout</a>
+      {% else %}
+        <a href="{% url 'login' %}">Login</a>
+        <a href="{% url 'register' %}">Register</a>
+      {% endif %}
+      </nav>
+    </div>
+  </header>
+
+  <div class="main-content">
+    <div class="page-container">
+      <h2 style="text-align: center; margin-bottom: 30px; color: var(--primary-color);">Plan Your Trip</h2>
+      <div class="container">
+        <div class="card">
+          <div class="trip-tabs" role="tablist">
+            <div class="trip-tab active" id="oneWayTab">One Way</div>
+            <div class="trip-tab" id="roundTripTab">Round Trip</div>
+          </div>
+
+          <form id="tripForm" method="post" action="{% url 'plan_trip' %}">
+            {% csrf_token %}
+            {% if form.non_field_errors %}
+              <div class="error-text" style="margin-bottom:10px;">{{ form.non_field_errors|join:", " }}</div>
+            {% endif %}
+            <div class="field-row">
+              <div>
+                <label>Full Name *</label>
+                <input type="text" id="fullName" name="full_name" class="form-control" placeholder="Enter your full name" value="{{ form.full_name.value|default_if_none:'' }}" required>
+                {% if form.full_name.errors %}
+                  <span class="error-text">{{ form.full_name.errors|join:", " }}</span>
+                {% endif %}
+              </div>
+              <div>
+                <label>Email Address *</label>
+                <input type="email" id="email" name="email" class="form-control" placeholder="your.email@example.com" value="{{ form.email.value|default_if_none:'' }}" required>
+                {% if form.email.errors %}
+                  <span class="error-text">{{ form.email.errors|join:", " }}</span>
+                {% endif %}
+              </div>
+            </div>
+
+            <div class="field-row">
+              <div>
+                <label>Phone Number *</label>
+                <input type="tel" id="phone" name="phone" class="form-control" placeholder="+91 1234567890" value="{{ form.phone.value|default_if_none:'' }}" required>
+                {% if form.phone.errors %}
+                  <span class="error-text">{{ form.phone.errors|join:", " }}</span>
+                {% endif %}
+              </div>
+              <div>
+                <label>Destination *</label>
+                <select id="destination" name="destination" class="form-control" required>
+                  <option value="" disabled {% if not form.destination.value %}selected{% endif %}>Select destination</option>
+                  <option value="europe" {% if form.destination.value == "europe" %}selected{% endif %}>European Adventure</option>
+                  <option value="asia" {% if form.destination.value == "asia" %}selected{% endif %}>Asian Experience</option>
+                  <option value="caribbean" {% if form.destination.value == "caribbean" %}selected{% endif %}>Caribbean Paradise</option>
+                  <option value="africa" {% if form.destination.value == "africa" %}selected{% endif %}>African Safari</option>
+                  <option value="other" {% if form.destination.value == "other" %}selected{% endif %}>Other</option>
+                </select>
+                {% if form.destination.errors %}
+                  <span class="error-text">{{ form.destination.errors|join:", " }}</span>
+                {% endif %}
+              </div>
+            </div>
+
+            <div class="field-row">
+              <div>
+                <label>From</label>
+                <input type="text" id="fromLocation" name="from_location" class="form-control" placeholder="City or airport" value="{{ form.from_location.value|default_if_none:'' }}">
+              </div>
+              <div>
+                <label>To</label>
+                <input type="text" id="toLocation" name="to_location" class="form-control" placeholder="City or airport" value="{{ form.to_location.value|default_if_none:'' }}">
+              </div>
+            </div>
+
+            <div class="field-row">
+              <div>
+                <label>Departure Date</label>
+                <input type="date" id="departDate" name="depart_date" class="form-control" value="{{ form.depart_date.value|default_if_none:'' }}">
+              </div>
+              <div id="returnDateWrap" style="display:{% if form.return_date.value %}block{% else %}none{% endif %};">
+                <label>Return Date</label>
+                <input type="date" id="returnDate" name="return_date" class="form-control" value="{{ form.return_date.value|default_if_none:'' }}">
+              </div>
+            </div>
+
+            <div class="field-row">
+              <div>
+                <label>Travellers & Class</label>
+                <div class="pill">
+                  <input type="number" id="adults" name="adults" min="1" value="{{ form.adults.value|default_if_none:'1' }}" style="width:70px"> Adults
+                  <input type="number" id="children" name="children" min="0" value="{{ form.children.value|default_if_none:'0' }}" style="width:70px"> Children
+                  <select id="cabin" name="cabin">
+                    <option value="Economy" {% if form.cabin.value == "Economy" %}selected{% endif %}>Economy</option>
+                    <option value="Premium Economy" {% if form.cabin.value == "Premium Economy" %}selected{% endif %}>Premium Economy</option>
+                    <option value="Business" {% if form.cabin.value == "Business" %}selected{% endif %}>Business</option>
+                    <option value="First" {% if form.cabin.value == "First" %}selected{% endif %}>First</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label>Budget *</label>
+                <select id="budget" name="budget" class="form-control" required>
+                  <option value="" disabled {% if not form.budget.value %}selected{% endif %}>Select your budget</option>
+                  <option value="25000" {% if form.budget.value|stringformat:"s" == "25000" %}selected{% endif %}>₹25,000</option>
+                  <option value="50000" {% if form.budget.value|stringformat:"s" == "50000" %}selected{% endif %}>₹50,000</option>
+                  <option value="75000" {% if form.budget.value|stringformat:"s" == "75000" %}selected{% endif %}>₹75,000</option>
+                  <option value="100000" {% if form.budget.value|stringformat:"s" == "100000" %}selected{% endif %}>₹1 Lakh</option>
+                  <option value="150000" {% if form.budget.value|stringformat:"s" == "150000" %}selected{% endif %}>₹1.5 Lakh</option>
+                  <option value="200000" {% if form.budget.value|stringformat:"s" == "200000" %}selected{% endif %}>₹2 Lakh</option>
+                  <option value="300000" {% if form.budget.value|stringformat:"s" == "300000" %}selected{% endif %}>₹3 Lakh</option>
+                  <option value="500000" {% if form.budget.value|stringformat:"s" == "500000" %}selected{% endif %}>₹5 Lakh+</option>
+                </select>
+                {% if form.budget.errors %}
+                  <span class="error-text">{{ form.budget.errors|join:", " }}</span>
+                {% endif %}
+              </div>
+            </div>
+
+            <div class="field-row">
+              <div>
+                <label>Preferred Accommodation *</label>
+                <select id="accommodation" name="accommodation" class="form-control" required>
+                  <option value="" disabled {% if not form.accommodation.value %}selected{% endif %}>Select accommodation type</option>
+                  <option value="hotel" {% if form.accommodation.value == "hotel" %}selected{% endif %}>Hotel</option>
+                  <option value="resort" {% if form.accommodation.value == "resort" %}selected{% endif %}>Resort</option>
+                  <option value="villa" {% if form.accommodation.value == "villa" %}selected{% endif %}>Villa</option>
+                  <option value="apartment" {% if form.accommodation.value == "apartment" %}selected{% endif %}>Apartment</option>
+                  <option value="hostel" {% if form.accommodation.value == "hostel" %}selected{% endif %}>Hostel</option>
+                </select>
+                {% if form.accommodation.errors %}
+                  <span class="error-text">{{ form.accommodation.errors|join:", " }}</span>
+                {% endif %}
+              </div>
+              <div>
+                <label>Trip Type</label>
+                <select id="tripType" name="trip_type" class="form-control">
+                  <option value="Leisure" {% if form.trip_type.value == "Leisure" %}selected{% endif %}>Leisure</option>
+                  <option value="Business" {% if form.trip_type.value == "Business" %}selected{% endif %}>Business</option>
+                  <option value="Adventure" {% if form.trip_type.value == "Adventure" %}selected{% endif %}>Adventure</option>
+                  <option value="Honeymoon" {% if form.trip_type.value == "Honeymoon" %}selected{% endif %}>Honeymoon</option>
+                </select>
+              </div>
+            </div>
+
+            <label style="margin-top:12px;">Preferences</label>
+            <div class="field-row">
+              <div>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="prefDirect" name="pref_direct" {% if form.pref_direct.value %}checked{% endif %}><label class="form-check-label" for="prefDirect">Direct flights only</label></div>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="prefWindow" name="pref_window" {% if form.pref_window.value %}checked{% endif %}><label class="form-check-label" for="prefWindow">Window seat</label></div>
+              </div>
+              <div>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="prefBreakfast" name="pref_breakfast" {% if form.pref_breakfast.value %}checked{% endif %}><label class="form-check-label" for="prefBreakfast">Hotel with breakfast</label></div>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="prefAttractions" name="pref_attractions" {% if form.pref_attractions.value %}checked{% endif %}><label class="form-check-label" for="prefAttractions">Near attractions</label></div>
+              </div>
+            </div>
+
+            <label style="margin-top:12px;">Special Requirements (Optional)</label>
+            <textarea id="specialRequests" name="special_requests" class="form-control" rows="3" placeholder="Any special requirements, dietary restrictions, accessibility needs, or specific activities...">{{ form.special_requests.value|default_if_none:'' }}</textarea>
+
+            <button type="button" class="btn" id="routeBtn">Search & Show Route</button>
+            <div id="summary" style="margin-top:10px;color:#666;font-size:14px;"></div>
+            
+            <button type="submit" class="btn" id="checkoutBtn" style="background: var(--accent-color); margin-top: 15px;">
+              <i class="fas fa-shopping-cart"></i> Proceed to Checkout
+            </button>
+          </form>
+        </div>
+        <div class="card">
+          <div id="map"></div>
+          <div id="status" style="margin-top:8px;color:#666;font-size:14px;"></div>
+        </div>
+      </div>
+      {% if recent_bookings %}
+      <div class="card recent-bookings">
+        <h3 style="margin-bottom:15px;">Your recent bookings</h3>
+        {% for booking in recent_bookings %}
+          <div class="recent-booking-item">
+            <strong>{{ booking.destination|title }}</strong>
+            <div style="font-size:0.9rem; color:#555;">
+              {{ booking.depart_date|default:"Flexible" }}{% if booking.return_date %} → {{ booking.return_date }}{% endif %} • {{ booking.adults }} Adult(s){% if booking.children %}, {{ booking.children }} Child(ren){% endif %} • Status: {{ booking.get_status_display }}
+            </div>
+          </div>
+        {% empty %}
+          <p>No bookings just yet.</p>
+        {% endfor %}
+        <div style="margin-top:12px;">
+          <a href="{% url 'my_bookings' %}" style="color:var(--primary-color); text-decoration:none; font-weight:600;">View all bookings →</a>
+        </div>
+      </div>
+      {% endif %}
+  </div>
+  </div>
+</body>
+</html>
+
+
